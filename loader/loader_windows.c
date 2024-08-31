@@ -409,6 +409,8 @@ VkResult windows_get_registry_files(const struct loader_instance *inst, char *lo
     bool is_driver = !strcmp(location, VK_DRIVERS_INFO_REGISTRY_LOC);
     uint32_t log_target_flag = is_driver ? VULKAN_LOADER_DRIVER_BIT : VULKAN_LOADER_LAYER_BIT;
 
+    loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files");
+
     assert(reg_data != NULL && "windows_get_registry_files: reg_data is a NULL pointer");
 
     if (is_driver) {
