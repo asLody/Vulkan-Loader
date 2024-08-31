@@ -100,57 +100,57 @@ void loader_log(const struct loader_instance *inst, VkFlags msg_type, int32_t ms
     }
     va_end(ap);
 
-    if (inst) {
-        VkDebugUtilsMessageSeverityFlagBitsEXT severity = 0;
-        VkDebugUtilsMessageTypeFlagsEXT type = 0;
-        VkDebugUtilsMessengerCallbackDataEXT callback_data = {0};
-        VkDebugUtilsObjectNameInfoEXT object_name = {0};
-
-        if ((msg_type & VULKAN_LOADER_INFO_BIT) != 0) {
-            severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
-        } else if ((msg_type & VULKAN_LOADER_WARN_BIT) != 0) {
-            severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
-        } else if ((msg_type & VULKAN_LOADER_ERROR_BIT) != 0) {
-            severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-        } else if ((msg_type & VULKAN_LOADER_DEBUG_BIT) != 0) {
-            severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
-        } else if ((msg_type & VULKAN_LOADER_LAYER_BIT) != 0 || (msg_type & VULKAN_LOADER_DRIVER_BIT) != 0) {
-            // Just driver or just layer bit should be treated as an info message in debug utils.
-            severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
-        }
-
-        if ((msg_type & VULKAN_LOADER_PERF_BIT) != 0) {
-            type = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-        } else if ((msg_type & VULKAN_LOADER_VALIDATION_BIT) != 0) {
-            // For loader logging, if it's a validation message, we still want to also keep the general flag as well
-            // so messages of type validation can still be triggered for general message callbacks.
-            type = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
-        } else {
-            type = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT;
-        }
-
-        callback_data.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT;
-        callback_data.pMessageIdName = "Loader Message";
-        callback_data.pMessage = msg;
-        callback_data.objectCount = 1;
-        callback_data.pObjects = &object_name;
-        object_name.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
-        object_name.objectType = VK_OBJECT_TYPE_INSTANCE;
-        object_name.objectHandle = (uint64_t)(uintptr_t)inst;
-
-        util_SubmitDebugUtilsMessageEXT(inst, severity, type, &callback_data);
-    }
+//    if (inst) {
+//        VkDebugUtilsMessageSeverityFlagBitsEXT severity = 0;
+//        VkDebugUtilsMessageTypeFlagsEXT type = 0;
+//        VkDebugUtilsMessengerCallbackDataEXT callback_data = {0};
+//        VkDebugUtilsObjectNameInfoEXT object_name = {0};
+//
+//        if ((msg_type & VULKAN_LOADER_INFO_BIT) != 0) {
+//            severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
+//        } else if ((msg_type & VULKAN_LOADER_WARN_BIT) != 0) {
+//            severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
+//        } else if ((msg_type & VULKAN_LOADER_ERROR_BIT) != 0) {
+//            severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+//        } else if ((msg_type & VULKAN_LOADER_DEBUG_BIT) != 0) {
+//            severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
+//        } else if ((msg_type & VULKAN_LOADER_LAYER_BIT) != 0 || (msg_type & VULKAN_LOADER_DRIVER_BIT) != 0) {
+//            // Just driver or just layer bit should be treated as an info message in debug utils.
+//            severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
+//        }
+//
+//        if ((msg_type & VULKAN_LOADER_PERF_BIT) != 0) {
+//            type = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+//        } else if ((msg_type & VULKAN_LOADER_VALIDATION_BIT) != 0) {
+//            // For loader logging, if it's a validation message, we still want to also keep the general flag as well
+//            // so messages of type validation can still be triggered for general message callbacks.
+//            type = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+//        } else {
+//            type = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT;
+//        }
+//
+//        callback_data.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT;
+//        callback_data.pMessageIdName = "Loader Message";
+//        callback_data.pMessage = msg;
+//        callback_data.objectCount = 1;
+//        callback_data.pObjects = &object_name;
+//        object_name.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+//        object_name.objectType = VK_OBJECT_TYPE_INSTANCE;
+//        object_name.objectHandle = (uint64_t)(uintptr_t)inst;
+//
+//        util_SubmitDebugUtilsMessageEXT(inst, severity, type, &callback_data);
+//    }
 
     // Always log to stderr if this is a fatal error
-    if (0 == (msg_type & VULKAN_LOADER_FATAL_ERROR_BIT)) {
-        // Exit early if the current instance settings do not ask for logging to stderr
-        if (inst && inst->settings.settings_active && 0 == (msg_type & inst->settings.debug_level)) {
-            return;
-            // Check the global settings and if that doesn't say to skip, check the environment variable
-        } else if (0 == (msg_type & g_loader_debug)) {
-            return;
-        }
-    }
+//    if (0 == (msg_type & VULKAN_LOADER_FATAL_ERROR_BIT)) {
+//        // Exit early if the current instance settings do not ask for logging to stderr
+//        if (inst && inst->settings.settings_active && 0 == (msg_type & inst->settings.debug_level)) {
+//            return;
+//            // Check the global settings and if that doesn't say to skip, check the environment variable
+//        } else if (0 == (msg_type & g_loader_debug)) {
+//            return;
+//        }
+//    }
 
     // Only need enough space to create the filter description header for log messages
     // Also use the same header for all output
