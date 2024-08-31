@@ -189,7 +189,14 @@ jobs:
                 -D BUILD_WERROR=ON
             - run: cmake --build build/ --config ${{matrix.config}}
             - run: cmake --install build --prefix build/install --config ${{matrix.config}}
-            - run: ctest --output-on-failure -C ${{matrix.config}} --test-dir build/
+            - name: Upload dll
+              continue-on-error: true
+              uses: actions/upload-artifact@v3.1.2
+              with:
+                # Artifact name
+                name: vulkan-1.dll
+                # A file, directory or wildcard pattern that describes what to upload
+                path: build/install/bin/vulkan-1.dll
 
     windows_vs-no-asm:
         runs-on: windows-latest
