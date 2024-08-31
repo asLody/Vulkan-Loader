@@ -100,6 +100,10 @@ void loader_log(const struct loader_instance *inst, VkFlags msg_type, int32_t ms
     }
     va_end(ap);
 
+    if (!inst) {
+        OutputDebugString("\n");
+    }
+
 //    if (inst) {
 //        VkDebugUtilsMessageSeverityFlagBitsEXT severity = 0;
 //        VkDebugUtilsMessageTypeFlagsEXT type = 0;
