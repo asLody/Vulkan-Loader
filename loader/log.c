@@ -101,7 +101,9 @@ void loader_log(const struct loader_instance *inst, VkFlags msg_type, int32_t ms
     va_end(ap);
 
     if (!inst) {
-        OutputDebugString("\n");
+        OutputDebugString("inst \n");
+    } else {
+        OutputDebugString("null inst \n");
     }
 
 //    if (inst) {
