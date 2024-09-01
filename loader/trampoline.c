@@ -68,6 +68,9 @@ LOADER_EXPORT VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetInstanceProcAddr(VkI
     // Always should be able to get vkGetInstanceProcAddr if queried, regardless of the value of instance
     if (!strcmp(pName, "vkGetInstanceProcAddr")) return (PFN_vkVoidFunction)vkGetInstanceProcAddr;
 
+    loader_log(NULL, VULKAN_LOADER_FATAL_ERROR_BIT | VULKAN_LOADER_ERROR_BIT | VULKAN_LOADER_VALIDATION_BIT, 0,
+               "vkGetInstanceProcAddr: %s", pName);
+
     // Get entrypoint addresses that are global (no dispatchable object)
     void *addr = globalGetProcAddr(pName);
     if (addr != VK_NULL_HANDLE) {
@@ -120,6 +123,9 @@ LOADER_EXPORT VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetInstanceProcAddr(VkI
 //    Device relative means call down the device chain.
 LOADER_EXPORT VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vkGetDeviceProcAddr(VkDevice device, const char *pName) {
     if (!pName || pName[0] != 'v' || pName[1] != 'k') return NULL;
+
+    loader_log(NULL, VULKAN_LOADER_FATAL_ERROR_BIT | VULKAN_LOADER_ERROR_BIT | VULKAN_LOADER_VALIDATION_BIT, 0,
+               "vkGetDeviceProcAddr: %s", pName);
 
     // For entrypoints that loader must handle (ie non-dispatchable or create object)
     // make sure the loader entrypoint is returned
