@@ -430,7 +430,7 @@ VkResult windows_get_registry_files(const struct loader_instance *inst, char *lo
         }
     }
 
-    if (*loc == NULL) {
+    if (!(*loc)) {
         loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files: *loc == NULL");
     }
 
