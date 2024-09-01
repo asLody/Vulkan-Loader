@@ -428,6 +428,8 @@ VkResult windows_get_registry_files(const struct loader_instance *inst, char *lo
         next = loader_get_next_path(loc);
         access_flags = KEY_QUERY_VALUE;
         rtn_value = RegOpenKeyEx(hive, loc, 0, access_flags, &key);
+
+        loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files RegOpenKeyEx");
         if (ERROR_SUCCESS == rtn_value) {
             for (DWORD idx = 0;
                  (rtn_value = RegEnumValue(key, idx++, name, &name_size, NULL, NULL, (LPBYTE)&value, &value_size)) == ERROR_SUCCESS;
@@ -548,6 +550,8 @@ VkResult windows_get_registry_files(const struct loader_instance *inst, char *lo
                 }
             }
             RegCloseKey(key);
+        } else {
+            loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files: RegOpenKeyEx failed");
         }
 
         // Advance the location - if the next location is in the secondary hive, then reset the locations and advance the hive
@@ -570,6 +574,7 @@ out:
         dxgi_factory->lpVtbl->Release(dxgi_factory);
     }
 
+    loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files result: %d", result);
     return result;
 }
 
