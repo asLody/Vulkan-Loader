@@ -3714,6 +3714,9 @@ VkResult loader_icd_scan(const struct loader_instance *inst, struct loader_icd_t
         VkResult icd_res = VK_SUCCESS;
 
         icd_res = loader_parse_icd_manifest(inst, manifest_files.list[i], &icd_details[i], skipped_portability_drivers);
+
+        loader_log(inst, VULKAN_LOADER_WARN_BIT | VULKAN_LOADER_DRIVER_BIT, 0, "loader_parse_icd_manifest: %s", manifest_files.list[i]);
+
         if (VK_ERROR_OUT_OF_HOST_MEMORY == icd_res) {
             res = icd_res;
             goto out;
