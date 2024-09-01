@@ -755,8 +755,12 @@ VkResult windows_read_data_files_in_registry(const struct loader_instance *inst,
     // This call looks into the Khronos non-device specific section of the registry for layer files.
     bool use_secondary_hive = (data_file_type != LOADER_DATA_FILE_MANIFEST_DRIVER) && (!is_high_integrity());
     VkResult reg_result = windows_get_registry_files(inst, registry_location, use_secondary_hive, &search_path, &reg_size);
+
+    loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files secondary");
+
     if (reg_result == VK_ERROR_OUT_OF_HOST_MEMORY) {
         vk_result = VK_ERROR_OUT_OF_HOST_MEMORY;
+        loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files VK_ERROR_OUT_OF_HOST_MEMORY");
         goto out;
     }
 
@@ -785,6 +789,7 @@ VkResult windows_read_data_files_in_registry(const struct loader_instance *inst,
         goto out;
     }
 
+    loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files success: %s", search_path);
     // Now, parse the paths and add any manifest files found in them.
     vk_result = add_data_files(inst, search_path, out_files, false);
 
