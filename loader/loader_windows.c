@@ -586,6 +586,7 @@ VkResult windows_read_manifest_from_d3d_adapters(const struct loader_instance *i
     HMODULE gdi32_dll = GetModuleHandle("gdi32.dll");
     if (gdi32_dll == NULL) {
         result = VK_ERROR_INCOMPATIBLE_DRIVER;
+        loader_log(inst, log_target_flag, 0, "windows_read_manifest_from_d3d_adapters，gdi32_dll == NULL");
         goto out;
     }
 
@@ -595,6 +596,7 @@ VkResult windows_read_manifest_from_d3d_adapters(const struct loader_instance *i
         (PFN_LoaderQueryAdapterInfo)(void *)GetProcAddress(gdi32_dll, "D3DKMTQueryAdapterInfo");
     if (fpLoaderEnumAdapters2 == NULL || fpLoaderQueryAdapterInfo == NULL) {
         result = VK_ERROR_INCOMPATIBLE_DRIVER;
+        loader_log(inst, log_target_flag, 0, "windows_read_manifest_from_d3d_adapters，fpLoaderEnumAdapters2 == NULL || fpLoaderQueryAdapterInfo == NULL");
         goto out;
     }
 
@@ -604,11 +606,13 @@ VkResult windows_read_manifest_from_d3d_adapters(const struct loader_instance *i
         adapters.adapters = loader_instance_heap_alloc(inst, sizeof(*adapters.adapters) * adapters.adapter_count,
                                                        VK_SYSTEM_ALLOCATION_SCOPE_COMMAND);
         if (adapters.adapters == NULL) {
+            loader_log(inst, log_target_flag, 0, "windows_read_manifest_from_d3d_adapters，adapters.adapters == NULL");
             goto out;
         }
         status = fpLoaderEnumAdapters2(&adapters);
     }
     if (status != STATUS_SUCCESS) {
+        loader_log(inst, log_target_flag, 0, "windows_read_manifest_from_d3d_adapters，LoaderEnumAdapters2 failed");
         goto out;
     }
 
@@ -687,6 +691,7 @@ VkResult windows_read_manifest_from_d3d_adapters(const struct loader_instance *i
             windows_add_json_entry(inst, reg_data, reg_data_size, (LPCTSTR)L"EnumAdapters", REG_SZ, json_path,
                                    (DWORD)strlen(json_path) + 1, &result);
             if (result != VK_SUCCESS) {
+                loader_log(inst, log_target_flag, 0, "windows_read_manifest_from_d3d_adapters，windows_add_json_entry failed");
                 goto out;
             }
 
