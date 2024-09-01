@@ -411,10 +411,16 @@ VkResult windows_get_registry_files(const struct loader_instance *inst, char *lo
 
     loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files");
 
+    if (reg_data == NULL) {
+        loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files: reg_data == NULL");
+    }
+
     assert(reg_data != NULL && "windows_get_registry_files: reg_data is a NULL pointer");
 
     if (is_driver) {
+        loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files: CreateDXGIFactory1 begin");
         HRESULT hres = fpCreateDXGIFactory1(&IID_IDXGIFactory1, (void **)&dxgi_factory);
+        loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files: CreateDXGIFactory1 end");
         if (hres != S_OK) {
             loader_log(inst, VULKAN_LOADER_WARN_BIT | log_target_flag, 0,
                        "windows_get_registry_files: Failed to create dxgi factory for ICD registry verification. No ICDs will be "
@@ -422,6 +428,10 @@ VkResult windows_get_registry_files(const struct loader_instance *inst, char *lo
                        "legacy registry locations");
             goto out;
         }
+    }
+
+    if (*loc == NULL) {
+        loader_log(inst, VULKAN_LOADER_ERROR_BIT | log_target_flag, 0, "windows_get_registry_files: *loc == NULL");
     }
 
     while (*loc) {
