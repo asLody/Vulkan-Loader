@@ -92,10 +92,6 @@ void loader_log(const struct loader_instance *inst, VkFlags msg_type, int32_t ms
     (void)msg_code;
     char msg[512] = {0};
 
-    if (true) {
-        abort();
-    }
-
     va_list ap;
     va_start(ap, format);
     int ret = vsnprintf(msg, sizeof(msg), format, ap);
