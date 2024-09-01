@@ -41,13 +41,13 @@ uint32_t g_loader_debug = 0;
 typedef int (*PFN_wineLogOutput)(const char *);
 PFN_wineLogOutput wineLogOutput = NULL;
 
-void log(const char *msg) {
+void wine_log(const char *msg) {
     wineLogOutput(msg);
 }
 
 void loader_init_global_debug_level(void) {
     HMODULE ntdll = GetModuleHandleA("ntdll.dll");
-    wineLogOutput = reinterpret_cast<PFN_wineLogOutput>(GetProcAddress(ntdll, "__wine_dbg_output"));
+    wineLogOutput = (PFN_wineLogOutput)(GetProcAddress(ntdll, "__wine_dbg_output"));
     
     char *env, *orig;
 
@@ -110,9 +110,9 @@ void loader_log(const struct loader_instance *inst, VkFlags msg_type, int32_t ms
     va_end(ap);
 
     if (!inst) {
-        log("inst \n");
+        wine_log("inst \n");
     } else {
-        log("null inst \n");
+        wine_log("null inst \n");
     }
 
 //    if (inst) {
@@ -230,9 +230,9 @@ void loader_log(const struct loader_instance *inst, VkFlags msg_type, int32_t ms
     fputs(msg, stderr);
     fputc('\n', stderr);
 #if defined(WIN32)
-    log(cmd_line_msg);
-    log(msg);
-    log("\n");
+    wine_log(cmd_line_msg);
+    wine_log(msg);
+    wine_log("\n");
 #endif
 }
 
