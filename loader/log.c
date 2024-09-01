@@ -38,8 +38,17 @@
 #include "vk_loader_platform.h"
 
 uint32_t g_loader_debug = 0;
+typedef int (*PFN_wineLogOutput)(const char *);
+PFN_wineLogOutput wineLogOutput = NULL;
+
+void log(const char *msg) {
+    wineLogOutput(msg);
+}
 
 void loader_init_global_debug_level(void) {
+    HMODULE ntdll = GetModuleHandleA("ntdll.dll");
+    wineLogOutput = reinterpret_cast<PFN_wineLogOutput>(GetProcAddress(ntdll, "__wine_dbg_output"));
+    
     char *env, *orig;
 
     if (g_loader_debug > 0) return;
@@ -101,9 +110,9 @@ void loader_log(const struct loader_instance *inst, VkFlags msg_type, int32_t ms
     va_end(ap);
 
     if (!inst) {
-        OutputDebugString("inst \n");
+        log("inst \n");
     } else {
-        OutputDebugString("null inst \n");
+        log("null inst \n");
     }
 
 //    if (inst) {
@@ -221,9 +230,9 @@ void loader_log(const struct loader_instance *inst, VkFlags msg_type, int32_t ms
     fputs(msg, stderr);
     fputc('\n', stderr);
 #if defined(WIN32)
-    OutputDebugString(cmd_line_msg);
-    OutputDebugString(msg);
-    OutputDebugString("\n");
+    log(cmd_line_msg);
+    log(msg);
+    log("\n");
 #endif
 }
 
